@@ -1,0 +1,630 @@
+/* ============================================================
+   PS Store — Калькулятор цен. Тёмная тема в стиле PlayStation
+   ============================================================ */
+
+:root {
+  --bg: #04070e;
+  --bg-2: #070c17;
+  --panel: rgba(255, 255, 255, 0.045);
+  --panel-2: rgba(255, 255, 255, 0.07);
+  --border: rgba(255, 255, 255, 0.09);
+  --text: #e9f1fb;
+  --muted: #93a6c2;
+  --accent: #0072ce;
+  --accent-2: #2fa0ff;
+  --accent-glow: rgba(47, 160, 255, 0.35);
+  --green: #29d07b;
+  --red: #ff6b6b;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --font: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background:
+    radial-gradient(1100px 600px at 15% -10%, rgba(0, 114, 206, 0.22), transparent 60%),
+    radial-gradient(900px 500px at 95% 10%, rgba(47, 160, 255, 0.14), transparent 55%),
+    linear-gradient(180deg, var(--bg-2), var(--bg) 40%);
+  background-attachment: fixed;
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+}
+
+a { color: var(--accent-2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  width: min(1080px, 100% - 32px);
+  margin: 0 auto;
+}
+
+/* ---------- Шапка ---------- */
+
+.site-header {
+  width: min(1080px, 100% - 32px);
+  margin: 0 auto;
+  padding: 44px 0 26px;
+  text-align: center;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 800;
+  letter-spacing: 0.4px;
+}
+
+.logo-icon {
+  font-size: 0.9em;
+  filter: drop-shadow(0 0 14px var(--accent-glow));
+}
+
+.logo-text em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--accent-2), #7fd0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 10px auto 0;
+  max-width: 640px;
+  color: var(--muted);
+  font-size: clamp(14px, 2vw, 17px);
+}
+
+/* ---------- Карточка поиска ---------- */
+
+.search-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.field { margin-bottom: 20px; }
+.field:last-child { margin-bottom: 0; }
+
+label, .field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+}
+
+#game-input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 16px;
+  font-size: 17px;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#game-input::placeholder { color: #61738f; }
+
+#game-input:focus {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(47, 160, 255, 0.18);
+}
+
+/* ---------- Кнопки ---------- */
+
+.btn {
+  padding: 14px 22px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.btn:hover { box-shadow: 0 8px 26px var(--accent-glow); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.55; cursor: wait; transform: none; box-shadow: none; }
+
+.btn-ghost {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.btn-ghost:hover { border-color: var(--accent-2); box-shadow: none; }
+
+:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* ---------- Подсказки-примеры ---------- */
+
+.hints {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.hint {
+  padding: 5px 12px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.hint:hover { border-color: var(--accent-2); background: rgba(47, 160, 255, 0.12); }
+
+/* ---------- Выбор страны ---------- */
+
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.country-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.country-btn .flag { font-size: 20px; line-height: 1; }
+.country-btn .cur { margin-left: auto; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+.country-btn:hover { border-color: rgba(47, 160, 255, 0.6); }
+
+.country-btn[aria-checked="true"] {
+  background: linear-gradient(135deg, rgba(0, 114, 206, 0.35), rgba(47, 160, 255, 0.18));
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(47, 160, 255, 0.15), 0 8px 22px rgba(0, 114, 206, 0.25);
+}
+
+/* ---------- Статус ---------- */
+
+.status {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--panel);
+  text-align: center;
+  color: var(--muted);
+}
+
+.status.error { border-color: rgba(255, 107, 107, 0.5); color: #ffc9c9; }
+.status .btn { margin-top: 12px; }
+
+.hidden { display: none !important; }
+
+.spinner {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.18);
+  border-top-color: var(--accent-2);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: -5px;
+  margin-right: 10px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Результаты ---------- */
+
+.results { margin-top: 30px; }
+
+.section-title {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.section-title span { color: var(--text); }
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.18s, border-color 0.2s, box-shadow 0.25s;
+}
+
+.card:hover, .card:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(47, 160, 255, 0.65);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(47, 160, 255, 0.25);
+}
+
+.card.selected {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 2px rgba(47, 160, 255, 0.4);
+}
+
+.card-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background: #0a1020;
+}
+
+.card-body { padding: 13px 14px 15px; }
+
+.card-title {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+
+.card-price {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--accent-2);
+}
+
+.card-price.free { color: var(--green); }
+.card-price.unknown { color: var(--muted); font-size: 14px; font-weight: 600; }
+.price-main.unknown { color: var(--muted); font-size: 22px; }
+
+.card-time {
+  margin-top: 6px;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--muted);
+  opacity: 0.85;
+}
+
+.card-time.changed { color: var(--accent-2); opacity: 1; font-weight: 600; }
+
+/* ---------- Точность цены: время проверки и история ---------- */
+
+.price-fresh {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+
+.price-fresh .price-note { margin-top: 0; }
+
+.btn-sm {
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.price-history {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.price-history .price-note { margin-top: 0; margin-bottom: 6px; }
+
+.hist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.hist-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.hist-list li.latest { color: var(--text); font-weight: 600; }
+.hist-list li.latest .hist-values { color: var(--accent-2); }
+.hist-list .hist-when { white-space: nowrap; opacity: 0.8; }
+
+.cell-time {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+/* ---------- Карточка выбранной игры ---------- */
+
+.detail {
+  margin-top: 30px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+}
+
+.detail-cover {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  background: #0a1020;
+  border: 1px solid var(--border);
+}
+
+.detail-title {
+  margin: 0 0 10px;
+  font-size: clamp(20px, 3vw, 27px);
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 18px;
+}
+
+.price-block {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.price-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.price-main {
+  font-size: clamp(26px, 5vw, 38px);
+  font-weight: 900;
+  color: var(--accent-2);
+  margin: 4px 0 2px;
+}
+
+.price-main.free { color: var(--green); }
+
+.price-sub {
+  font-size: 16px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.price-note {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.convert-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.convert-row select,
+.compare-controls select {
+  padding: 8px 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.detail-actions a.btn, .detail-actions .btn { text-decoration: none; display: inline-block; }
+
+/* ---------- Сравнение стран ---------- */
+
+.compare {
+  margin-top: 22px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+
+.compare-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.compare-head h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.compare-controls { display: flex; align-items: center; gap: 8px; }
+
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.compare-table th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.compare-table td {
+  padding: 11px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.055);
+  vertical-align: middle;
+}
+
+.compare-table tr:last-child td { border-bottom: none; }
+
+.compare-table .c-country { font-weight: 700; white-space: nowrap; }
+.compare-table .c-country .flag { margin-right: 8px; font-size: 18px; }
+.compare-table .c-price { font-weight: 800; color: var(--accent-2); white-space: nowrap; }
+.compare-table .c-conv { color: var(--text); white-space: nowrap; }
+.compare-table .c-diff { color: var(--muted); white-space: nowrap; font-size: 13.5px; }
+
+.compare-table tr.current td { background: rgba(47, 160, 255, 0.07); }
+.compare-table tr.cheapest .c-price { color: var(--green); }
+.compare-table tr.cheapest .c-diff { color: var(--green); font-weight: 700; }
+.compare-table tr.notfound td { color: #6f819c; }
+
+.badge-best {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #052e1a;
+  background: var(--green);
+  border-radius: 999px;
+  padding: 2px 8px;
+  vertical-align: middle;
+}
+
+.cell-loading { color: var(--muted); }
+
+/* ---------- Подвал ---------- */
+
+.site-footer {
+  width: min(1080px, 100% - 32px);
+  margin: 46px auto 30px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.site-footer p { margin: 4px 0; }
+
+/* ---------- Адаптив ---------- */
+
+@media (max-width: 720px) {
+  .input-row { flex-direction: column; }
+  .btn { width: 100%; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .detail-cover { max-width: 260px; margin: 0 auto; }
+  .search-card { padding: 16px; }
+  .compare-table { font-size: 13.5px; }
+  .compare-table th, .compare-table td { padding: 8px 6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
